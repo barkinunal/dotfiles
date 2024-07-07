@@ -20,16 +20,16 @@ return {
 			harpoon:list():add()
 		end)
 
-		vim.keymap.set("n", "<C-u>", function()
+		vim.keymap.set("n", "<C-i>", function()
 			harpoon:list():select(1)
 		end)
-		vim.keymap.set("n", "<C-i>", function()
+		vim.keymap.set("n", "<C-o>", function()
 			harpoon:list():select(2)
 		end)
-		vim.keymap.set("n", "<C-o>", function()
+		vim.keymap.set("n", "<C-p>", function()
 			harpoon:list():select(3)
 		end)
-		vim.keymap.set("n", "<C-p>", function()
+		vim.keymap.set("n", "<C-{>", function()
 			harpoon:list():select(4)
 		end)
 
@@ -40,8 +40,6 @@ return {
 		vim.keymap.set("n", "<C-S-N>", function()
 			harpoon:list():next()
 		end)
-
-		harpoon:setup({})
 
 		-- basic telescope configuration
 		local conf = require("telescope.config").values
