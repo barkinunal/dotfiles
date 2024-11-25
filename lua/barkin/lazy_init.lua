@@ -1,4 +1,13 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+-- You can put your default mappings / updates / etc. in here
+--  All the info you're looking for is in `:help telescope.setup()`
+--
+-- defaults = {
+--   mappings = {
+--     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+--   },
+-- },
+-- pickers = {}
 if not vim.loop.fs_stat(lazypath) then
 	vim.fn.system({
 		"git",
@@ -14,6 +23,13 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
 	spec = "barkin.lazy",
 	change_detection = { notify = false },
+	rocks = {
+		enabled = false,
+	},
+	{
+		"nvim-lua/plenary.nvim",
+		name = "plenary",
+	},
 }, {
 	ui = {
 		-- If you are using a Nerd Font: set icons to an empty table which will use the
