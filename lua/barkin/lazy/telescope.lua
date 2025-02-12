@@ -49,7 +49,7 @@ return { -- Fuzzy Finder (files, lsp, etc)
 		vim.keymap.set("n", "<leader>ps", function()
 			builtin.grep_string({ search = vim.fn.input("Grep > ") })
 		end)
-		vim.keymap.set("n", "<leader>vh", builtin.help_tags, {})
+		vim.keymap.set("n", "<leader>fh", builtin.help_tags, {})
 
 		-- Slightly advanced example of overriding default behavior and theme
 		vim.keymap.set("n", "<leader>/", function()

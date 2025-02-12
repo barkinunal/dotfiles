@@ -2,5 +2,9 @@
     "diagnostics.globals": [
         "vim",
         "make_finder"
+    ],
+    "diagnostics.disable": [
+        "undefined-field",
+        "param-type-mismatch"
     ]
 }
