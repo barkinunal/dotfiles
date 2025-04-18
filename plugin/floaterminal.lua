@@ -1,59 +1,126 @@
-local state = {
-	floating = {
-		buf = -1,
-		win = -1,
-	},
-}
-
-local function create_floating_window(opts)
-	opts = opts or {} -- default config if nil is passed
-
-	local screen_width = vim.o.columns
-	local screen_height = vim.o.lines
-
-	local default_width = math.floor(screen_width * 0.8)
-	local default_height = math.floor(screen_height * 0.8)
-
-	local width = opts.width or default_width
-	local height = opts.height or default_height
-
-	local row = math.floor((screen_height - height) / 2)
-	local col = math.floor((screen_width - width) / 2)
-
-	local buf = nil
-	if vim.api.nvim_buf_is_valid(opts.buf) then
-		buf = opts.buf
-	else
-		buf = vim.api.nvim_create_buf(false, true) -- create a scratch buffer, no swap file
-	end
-
-	local win_config = vim.tbl_extend("force", { -- "force" is to overwrite default if specified in config
-		relative = "editor",
-		row = row,
-		col = col,
-		width = width,
-		height = height,
-		style = "minimal",
-		border = "rounded", -- adds a rounded border, you can customize this
-	}, opts.win_opts or {}) -- merge win_opts from config if provided, for extra options
-
-	local win = vim.api.nvim_open_win(buf, true, win_config)
-	return { win = win, buf = buf }
-end
-
-local toggle_terminal = function()
-	if not vim.api.nvim_win_is_valid(state.floating.win) then
-		state.floating = create_floating_window({ buf = state.floating.buf })
-		if vim.bo[state.floating.buf].buftype ~= "terminal" then
-			vim.cmd.terminal()
-			vim.api.nvim_input("ilazygit<CR>")
-		else
-			vim.api.nvim_input("i")
-		end
-	else
-		vim.api.nvim_win_hide(state.floating.win)
-	end
-end
-
-vim.api.nvim_create_user_command("Floaterminal", toggle_terminal, {})
-vim.keymap.set({ "n", "t" }, "<leader>tt", toggle_terminal)
+-- local state = {
+-- 	{
+-- 		buf = -1,
+-- 		win = -1,
+-- 	},
+-- }
+--
+-- local current_tab_index = 1
+-- local MAX_TABS = 3
+--
+-- local add_empty_state = function()
+-- 	table.insert(state, { buf = -1, win = -1 })
+-- end
+--
+-- local function create_floating_window(opts)
+-- 	opts = opts or {} -- default config if nil is passed
+--
+-- 	local screen_width = vim.o.columns
+-- 	local screen_height = vim.o.lines
+--
+-- 	local default_width = math.floor(screen_width * 0.8)
+-- 	local default_height = math.floor(screen_height * 0.8)
+--
+-- 	local width = opts.width or default_width
+-- 	local height = opts.height or default_height
+--
+-- 	local row = math.floor((screen_height - height) / 2)
+-- 	local col = math.floor((screen_width - width) / 2)
+--
+-- 	local buf = nil
+-- 	if vim.api.nvim_buf_is_valid(opts.buf) then
+-- 		buf = opts.buf
+-- 	else
+-- 		buf = vim.api.nvim_create_buf(false, true) -- create a scratch buffer, no swap file
+-- 	end
+--
+-- 	local win_config = vim.tbl_extend("force", { -- "force" is to overwrite default if specified in config
+-- 		relative = "editor",
+-- 		row = row,
+-- 		col = col,
+-- 		width = width,
+-- 		height = height,
+-- 		style = "minimal",
+-- 		border = "rounded", -- adds a rounded border, you can customize this
+-- 	}, opts.win_opts or {}) -- merge win_opts from config if provided, for extra options
+--
+-- 	local win = vim.api.nvim_open_win(buf, true, win_config)
+-- 	return { win = win, buf = buf }
+-- end
+--
+-- local create_terminal_window = function()
+-- 	local current_state = create_floating_window({ buf = state[current_tab_index].buf })
+-- 	if vim.bo[current_state.buf].buftype ~= "terminal" then
+-- 		vim.cmd.terminal()
+-- 	end
+-- 	state[current_tab_index] = current_state
+-- end
+--
+-- local toggle_terminal = function()
+-- 	if not vim.api.nvim_win_is_valid(state[current_tab_index].win) then
+-- 		create_terminal_window()
+-- 	else
+-- 		vim.api.nvim_win_hide(state[current_tab_index].win)
+-- 	end
+-- end
+--
+-- local round_robin = function(x, y)
+-- 	if x > y then
+-- 		x = 1
+-- 	elseif current_tab_index == 0 then
+-- 		x = y
+-- 	end
+-- 	return x
+-- end
+--
+-- local perform = function(action)
+-- 	toggle_terminal()
+-- 	action()
+-- 	current_tab_index = round_robin(current_tab_index, #state)
+-- 	toggle_terminal()
+-- end
+--
+-- local add_tab = function()
+-- 	if #state < MAX_TABS then
+-- 		perform(function()
+-- 			add_empty_state()
+-- 			current_tab_index = #state
+-- 		end)
+-- 	end
+-- end
+--
+-- local remove_tab = function()
+-- 	perform(function()
+-- 		table.remove(state, current_tab_index)
+-- 		if #state == 0 then
+-- 			add_empty_state()
+-- 		end
+-- 		current_tab_index = current_tab_index - 1
+-- 	end)
+-- end
+--
+-- local next_tab = function()
+-- 	perform(function()
+-- 		current_tab_index = current_tab_index + 1
+-- 	end)
+-- end
+--
+-- local previous_tab = function()
+-- 	perform(function()
+-- 		current_tab_index = current_tab_index - 1
+-- 	end)
+-- end
+--
+-- vim.api.nvim_create_user_command("Floaterminal", toggle_terminal, {})
+-- vim.api.nvim_create_user_command("Floaterminal tabnew", add_tab, {})
+-- vim.api.nvim_create_user_command("Floaterminal tabc", remove_tab, {})
+-- vim.api.nvim_create_user_command("Floaterminal tabn", next_tab, {})
+-- vim.api.nvim_create_user_command("Floaterminal tabp", previous_tab, {})
+--
+-- vim.keymap.set({ "n", "t" }, "<leader>tt", toggle_terminal)
+-- vim.keymap.set({ "n", "t" }, "<leader><leader>", add_tab)
+-- vim.keymap.set({ "n", "t" }, "<leader>d", remove_tab)
+-- vim.keymap.set({ "n", "t" }, "<leader>]", next_tab)
+-- vim.keymap.set({ "n", "t" }, "<leader>[", previous_tab)
+--
+-- -- Delete current tab

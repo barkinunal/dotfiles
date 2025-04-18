@@ -55,6 +55,51 @@ local colorschemes = {
 			vim.cmd.hi("Comment gui=none")
 		end,
 	},
+
+	material = {
+		"marko-cerovac/material.nvim",
+		config = function()
+			--Lua:
+			vim.g.material_style = "darker"
+			vim.cmd.colorscheme("material")
+			vim.opt.guicursor = "n-v-i-c:block-Cursor"
+
+			require("material").setup({
+				plugins = { -- Uncomment the plugins that you use to highlight them
+					-- Available plugins:
+					-- "coc",
+					-- "colorful-winsep",
+					-- "dap",
+					-- "dashboard",
+					-- "eyeliner",
+					-- "fidget",
+					-- "flash",
+					-- "gitsigns",
+					-- "harpoon",
+					-- "hop",
+					-- "illuminate",
+					-- "indent-blankline",
+					-- "lspsaga",
+					-- "mini",
+					-- "neogit",
+					-- "neotest",
+					-- "neo-tree",
+					-- "neorg",
+					-- "noice",
+					-- "nvim-cmp",
+					-- "nvim-navic",
+					-- "nvim-tree",
+					-- "nvim-web-devicons",
+					-- "rainbow-delimiters",
+					-- "sneak",
+					-- "telescope",
+					-- "trouble",
+					-- "which-key",
+					-- "nvim-notify",
+				},
+			})
+		end,
+	},
 }
 
-return colorschemes.tokyoNight
+return colorschemes.material

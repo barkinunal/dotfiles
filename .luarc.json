@@ -1,7 +1,8 @@
 {
     "diagnostics.globals": [
         "vim",
-        "make_finder"
+        "make_finder",
+        "current_state"
     ],
     "diagnostics.disable": [
         "undefined-field",
